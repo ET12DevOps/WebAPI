@@ -4,4 +4,6 @@ public class Alumno
 {
     public int Id { get; set; }
     public required string Nombre { get; set; }
+    public int Edad { get; set; }
+    public List<Curso> Cursos = new List<Curso>();
 }

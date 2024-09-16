@@ -20,26 +20,113 @@ List<Alumno> alumnos = [
     new Alumno {Id = 3, Nombre = "Joel"}
 ];
 
-//endpoints
-app.MapGet("/", () =>
-{
-    return Results.Ok("hola mundo");
-});
+List<Curso> cursos = [
+    new Curso {Id = 1, Año = 6, Division = 7},
+    new Curso {Id = 2, Año = 6, Division = 8},
+];
 
-app.MapPost("/", ([FromBody] string nombre) =>
-{
-    return Results.Ok(nombre);
-});
-
+//lee listado de alumnos
 app.MapGet("/alumno", () =>
 {
     return Results.Ok(alumnos);
-});
+})
+    .WithTags("Alumno");
 
+//crea un nuevo alumno en la lista
 app.MapPost("/alumno", ([FromBody] Alumno alumno) =>
 {
     alumnos.Add(alumno);
     return Results.Ok(alumnos);
-});
+})
+    .WithTags("Alumno");
+
+app.MapDelete("/alumno", ([FromQuery] int idAlumno) =>
+{
+    var alumnoAEliminar = alumnos.FirstOrDefault(alumno => alumno.Id == idAlumno);
+    if (alumnoAEliminar != null)
+    {
+        alumnos.Remove(alumnoAEliminar);
+        return Results.Ok(alumnos); //Codigo 200
+    }
+    else
+    {
+        return Results.NotFound(); //Codigo 404
+    }
+})
+    .WithTags("Alumno");
+
+app.MapPut("/alumno", ([FromQuery] int idAlumno, [FromBody] Alumno alumno) =>
+{
+    var alumnoAActualizar = alumnos.FirstOrDefault(alumno => alumno.Id == idAlumno);
+    if (alumnoAActualizar != null)
+    {
+        alumnoAActualizar.Nombre = alumno.Nombre;
+        return Results.Ok(alumnos); //Codigo 200
+    }
+    else
+    {
+        return Results.NotFound(); //Codigo 404
+    }
+})
+    .WithTags("Alumno");
+
+app.MapGet("/curso", () =>
+{
+    return Results.Ok(cursos);
+})
+    .WithTags("Curso");
+
+app.MapPost("/curso", ([FromBody] Curso curso) =>
+{
+    cursos.Add(curso);
+    return Results.Ok(cursos);
+})
+    .WithTags("Curso");
+
+app.MapDelete("/curso", ([FromQuery] int idCurso) =>
+{
+    var cursoAEliminar = cursos.FirstOrDefault(curso => curso.Id == idCurso);
+    if (cursoAEliminar != null)
+    {
+        cursos.Remove(cursoAEliminar);
+        return Results.Ok(cursos); //Codigo 200
+    }
+    else
+    {
+        return Results.NotFound(); //Codigo 404
+    }
+})
+    .WithTags("Curso");
+
+app.MapPut("/curso", ([FromQuery] int idCurso, [FromBody] Curso curso) =>
+{
+    var cursoAActualizar = cursos.FirstOrDefault(curso => curso.Id == idCurso);
+    if (cursoAActualizar != null)
+    {
+        cursoAActualizar.Año = curso.Año;
+        cursoAActualizar.Division = curso.Division;
+        return Results.Ok(cursos); //Codigo 200
+    }
+    else
+    {
+        return Results.NotFound(); //Codigo 404
+    }
+})
+    .WithTags("Curso");
+
+app.MapPost("/curso/{idCurso}/alumno/{idAlumno}", (int idCurso, int idAlumno) =>
+{
+    var curso = cursos.FirstOrDefault(curso => curso.Id == idCurso);
+    var alumno = alumnos.FirstOrDefault(alumno => alumno.Id == idAlumno);
+
+    if (alumno != null && curso != null)
+    {
+        curso.Alumnos.Add(alumno);
+        return Results.Ok();
+    }
+
+    return Results.NotFound();
+})
+    .WithTags("Curso");
 
 app.Run();

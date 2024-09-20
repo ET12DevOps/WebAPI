@@ -1,6 +1,53 @@
 @Api_HostAddress = http://localhost:5067
-
-GET {{Api_HostAddress}}/weatherforecast/
+###
+GET {{Api_HostAddress}}/alumno/
 Accept: application/json
 
+###
+POST {{Api_HostAddress}}/alumno/
+Content-Type: application/json
+{
+    "id": 10,
+    "nombre": "juan",
+    "edad": 18
+}
+###
+PUT {{Api_HostAddress}}/alumno?idAlumno=10
+Content-Type: application/json
+{
+    "id": 10,
+    "nombre": "luciano",
+    "edad": 19
+}
+###
+DELETE {{Api_HostAddress}}/alumno?idAlumno=10
+Accept: application/json
+###
+GET {{Api_HostAddress}}/curso/
+Accept: application/json
+
+###
+POST {{Api_HostAddress}}/curso/
+Content-Type: application/json
+{
+    "id": 10,
+    "año": 6,
+    "division": 17,
+    "cicloLectivo": 2023
+}
+###
+PUT {{Api_HostAddress}}/curso?idCurso=10
+Content-Type: application/json
+{
+    "id": 10,
+    "año": 5,
+    "division": 17,
+    "cicloLectivo": 2021
+}
+###
+DELETE {{Api_HostAddress}}/curso?idCurso=10
+Accept: application/json
+###
+POST {{Api_HostAddress}}/curso/1/alumno/2
+Content-Type: application/json
 ###

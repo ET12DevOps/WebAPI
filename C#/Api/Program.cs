@@ -21,8 +21,8 @@ List<Alumno> alumnos = [
 ];
 
 List<Curso> cursos = [
-    new Curso {Id = 1, Año = 6, Division = 7},
-    new Curso {Id = 2, Año = 6, Division = 8},
+    new Curso {Id = 1, Año = 6, Division = 7, CicloLectivo = 2024 },
+    new Curso {Id = 2, Año = 6, Division = 8, CicloLectivo = 2024 },
 ];
 
 //lee listado de alumnos
@@ -121,6 +121,7 @@ app.MapPost("/curso/{idCurso}/alumno/{idAlumno}", (int idCurso, int idAlumno) =>
 
     if (alumno != null && curso != null)
     {
+        //alumno.Cursos.Add(curso);
         curso.Alumnos.Add(alumno);
         return Results.Ok();
     }

@@ -6,5 +6,5 @@ public class Curso
     public required int Año { get; set; }
     public required int Division { get; set; }
     public int CicloLectivo { get; set; }
-    public List<Alumno> Alumnos = new List<Alumno>();
+    public List<Alumno> Alumnos { get; set; } = new List<Alumno>();
 }

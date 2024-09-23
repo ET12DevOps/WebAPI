@@ -48,6 +48,9 @@ Content-Type: application/json
 DELETE {{Api_HostAddress}}/curso?idCurso=10
 Accept: application/json
 ###
-POST {{Api_HostAddress}}/curso/1/alumno/2
+POST {{Api_HostAddress}}/curso/2/alumno/2
+Content-Type: application/json
+###
+DELETE {{Api_HostAddress}}/curso/2/alumno/2
 Content-Type: application/json
 ###

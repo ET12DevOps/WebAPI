@@ -130,4 +130,19 @@ app.MapPost("/curso/{idCurso}/alumno/{idAlumno}", (int idCurso, int idAlumno) =>
 })
     .WithTags("Curso");
 
+app.MapDelete("/curso/{idCurso}/alumno/{idAlumno}", (int idCurso, int idAlumno) =>
+{
+    var curso = cursos.FirstOrDefault(curso => curso.Id == idCurso);
+    var alumno = alumnos.FirstOrDefault(alumno => alumno.Id == idAlumno);
+
+    if (alumno != null && curso != null)
+    {
+        curso.Alumnos.Remove(alumno);
+        return Results.Ok();
+    }
+
+    return Results.NotFound();
+})
+    .WithTags("Curso");
+
 app.Run();

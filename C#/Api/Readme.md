@@ -105,7 +105,7 @@ dotnet ef dbcontext scaffold "CONNECTION_STRING" DRIVER_CONEXION
 
 Para el caso puntual de **Postgres** se debe explicitar su cadena de conexión y su driver asociado, con el siguiente comando:
 ```
-dotnet ef dbcontext scaffold "Server=192.168.5.100;Database=escuela;User=administrador;Password=tecnica12" Npgsql.EntityFrameworkCore.PostgreSQL -o Models
+dotnet ef dbcontext scaffold "Server=192.168.5.100;Database=escuela;Username=administrador;Password=tecnica12" Npgsql.EntityFrameworkCore.PostgreSQL -o Models
 ```
 
 Antes de ejecutar el comando se debe tener en cuenta que el proyecto debe compilar (no debe tener error alguno).

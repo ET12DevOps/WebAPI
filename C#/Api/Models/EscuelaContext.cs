@@ -41,9 +41,9 @@ public partial class EscuelaContext : DbContext
 
         modelBuilder.Entity<Alumnocurso>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("alumnocurso");
+            entity.HasKey(e => e.Idalumnocurso).HasName("alumnocurso_pkey");
+
+            entity.ToTable("alumnocurso");
 
             entity.Property(e => e.Idalumno).HasColumnName("idalumno");
             entity.Property(e => e.Idalumnocurso)

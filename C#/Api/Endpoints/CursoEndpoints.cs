@@ -1,3 +1,4 @@
+using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Endpoints;
@@ -6,29 +7,26 @@ public static class CursoEndpoints
 {
     public static RouteGroupBuilder MapCursoEndpoints(this RouteGroupBuilder app)
     {
-        List<Curso> cursos = [
-            new Curso {Id = 1, Año = 6, Division = 7, CicloLectivo = 2024 },
-            new Curso {Id = 2, Año = 6, Division = 8, CicloLectivo = 2024 },
-        ];
-
-        app.MapGet("/curso", () =>
+        app.MapGet("/curso", (EscuelaContext context) =>
         {
-            return Results.Ok(cursos);
+            return Results.Ok(context.Cursos);
         });
 
-        app.MapPost("/curso", ([FromBody] Curso curso) =>
+        app.MapPost("/curso", ([FromBody] Curso curso, EscuelaContext context) =>
         {
-            cursos.Add(curso);
-            return Results.Ok(cursos);
+            context.Cursos.Add(curso);
+            context.SaveChanges();
+            return Results.Ok(context.Cursos);
         });
 
-        app.MapDelete("/curso", ([FromQuery] int idCurso) =>
+        app.MapDelete("/curso", ([FromQuery] Guid idCurso, EscuelaContext context) =>
         {
-            var cursoAEliminar = cursos.FirstOrDefault(curso => curso.Id == idCurso);
+            var cursoAEliminar = context.Cursos.FirstOrDefault(curso => curso.Idcurso == idCurso);
             if (cursoAEliminar != null)
             {
-                cursos.Remove(cursoAEliminar);
-                return Results.Ok(cursos); //Codigo 200
+                context.Cursos.Remove(cursoAEliminar);
+                context.SaveChanges();
+                return Results.Ok(context.Cursos); //Codigo 200
             }
             else
             {
@@ -36,19 +34,50 @@ public static class CursoEndpoints
             }
         });
 
-        app.MapPut("/curso", ([FromQuery] int idCurso, [FromBody] Curso curso) =>
+        app.MapPut("/curso", ([FromQuery] Guid idCurso, [FromBody] Curso curso, EscuelaContext context) =>
         {
-            var cursoAActualizar = cursos.FirstOrDefault(curso => curso.Id == idCurso);
+            var cursoAActualizar = context.Cursos.FirstOrDefault(curso => curso.Idcurso == idCurso);
             if (cursoAActualizar != null)
             {
-                cursoAActualizar.Año = curso.Año;
+                cursoAActualizar.Anio = curso.Anio;
                 cursoAActualizar.Division = curso.Division;
-                return Results.Ok(cursos); //Codigo 200
+                context.SaveChanges();
+                return Results.Ok(context.Cursos); //Codigo 200
             }
             else
             {
                 return Results.NotFound(); //Codigo 404
             }
+        });
+
+        app.MapPost("/curso/{idCurso}/alumno/{idAlumno}", (Guid idCurso, int idAlumno, EscuelaContext context) =>
+        {
+            var curso = context.Cursos.FirstOrDefault(curso => curso.Idcurso == idCurso);
+            var alumno = context.Alumnos.FirstOrDefault(alumno => alumno.Idalumno == idAlumno);
+
+            if (alumno != null && curso != null)
+            {
+                //alumno.Cursos.Add(curso);
+                context.Alumnocursos.Add(new Alumnocurso { Idalumnocurso = 0, IdalumnoNavigation = alumno, IdcursoNavigation = curso });
+                context.SaveChanges();
+                return Results.Ok();
+            }
+
+            return Results.NotFound();
+        });
+
+        app.MapDelete("/curso/{idCurso}/alumno/{idAlumno}", (Guid idCurso, int idAlumno, EscuelaContext context) =>
+        {
+            var alumnoCurso = context.Alumnocursos.FirstOrDefault(x => x.Idcurso == idCurso && x.Idalumno == idAlumno);
+
+            if (alumnoCurso is not null)
+            {
+                context.Alumnocursos.Remove(alumnoCurso);
+                context.SaveChanges();
+                return Results.Ok();
+            }
+
+            return Results.NotFound();
         });
 
         return app;

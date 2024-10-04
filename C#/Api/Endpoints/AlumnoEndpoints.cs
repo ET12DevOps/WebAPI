@@ -7,12 +7,6 @@ public static class AlumnoEndpoints
 {
     public static RouteGroupBuilder MapAlumnoEndpoints(this RouteGroupBuilder app)
     {
-        List<Alumno> alumnos = [
-            new Alumno {Id = 1, Nombre = "Lucas"},
-            new Alumno {Id = 2, Nombre = "Nahuel"},
-            new Alumno {Id = 3, Nombre = "Joel"}
-        ];
-
         //lee listado de alumnos
         app.MapGet("/alumno", (EscuelaContext context) =>
         {
@@ -20,19 +14,21 @@ public static class AlumnoEndpoints
         });
 
         //crea un nuevo alumno en la lista
-        app.MapPost("/alumno", ([FromBody] Alumno alumno) =>
+        app.MapPost("/alumno", ([FromBody] Alumno alumno, EscuelaContext context) =>
         {
-            alumnos.Add(alumno);
-            return Results.Ok(alumnos);
+            context.Alumnos.Add(alumno);
+            context.SaveChanges();
+            return Results.Ok(context.Alumnos);
         });
 
-        app.MapDelete("/alumno", ([FromQuery] int idAlumno) =>
+        app.MapDelete("/alumno", ([FromQuery] int idAlumno, EscuelaContext context) =>
         {
-            var alumnoAEliminar = alumnos.FirstOrDefault(alumno => alumno.Id == idAlumno);
+            var alumnoAEliminar = context.Alumnos.FirstOrDefault(alumno => alumno.Idalumno == idAlumno);
             if (alumnoAEliminar != null)
             {
-                alumnos.Remove(alumnoAEliminar);
-                return Results.Ok(alumnos); //Codigo 200
+                context.Alumnos.Remove(alumnoAEliminar);
+                context.SaveChanges();
+                return Results.Ok(context.Alumnos); //Codigo 200
             }
             else
             {
@@ -40,13 +36,14 @@ public static class AlumnoEndpoints
             }
         });
 
-        app.MapPut("/alumno", ([FromQuery] int idAlumno, [FromBody] Alumno alumno) =>
+        app.MapPut("/alumno", ([FromQuery] int idAlumno, [FromBody] Alumno alumno, EscuelaContext context) =>
         {
-            var alumnoAActualizar = alumnos.FirstOrDefault(alumno => alumno.Id == idAlumno);
+            var alumnoAActualizar = context.Alumnos.FirstOrDefault(alumno => alumno.Idalumno == idAlumno);
             if (alumnoAActualizar != null)
             {
                 alumnoAActualizar.Nombre = alumno.Nombre;
-                return Results.Ok(alumnos); //Codigo 200
+                context.SaveChanges();
+                return Results.Ok(context.Alumnos); //Codigo 200
             }
             else
             {
